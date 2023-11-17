@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "C:\\Users\\Luksi02\\Desktop\\CS50\\src\\cs50.h"
+#include "C:\\Users\\Luksi02\\Desktop\\CS50\\Week_1_Lecture\\src\\cs50.h"
 
 int main(void)
 {
