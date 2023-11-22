@@ -1,3 +1,7 @@
+// Idea of this task/script is to implement encoding message into binary
+// (or to make it even more obvious, to encode each character as set of
+// 8 bulbs that are lit/unlit (representations of set of 0s and 1s)
+
 #include <stdio.h>
 #include <string.h>
 // #include "C:\\Users\\Luksi02\\Desktop\\CS50\\Week_2\\Problem_set\\cs50.h"
