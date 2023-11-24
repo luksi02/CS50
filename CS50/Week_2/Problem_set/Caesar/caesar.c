@@ -11,32 +11,19 @@ char rotate(char c, int n);
 
 int main(void)
 {
-    // Make sure program was run with just one command-line argument
     int key = get_key();
     printf("Key: %i \n", key);
-    // SO FAR SO GOOD!
 
-    // Make sure every character in argv[1] is a digit --> get_key() handles this, am I wrong?
-    // Convert argv[1] from a `string` to an `int` --> get_key() handles this, am I wrong?
-
-    // Prompt user for plaintext
     string plaintext = get_string("Insert text to encode: ");
     printf("Plaintext: %s \n", plaintext);
 
     int len = strlen(plaintext);
     printf("Length: %i \n", len);
 
-    // For each character in the plaintext:
-    // Rotate the character if it's a letter
-
-    // for (int i = 0; i < strlen(plaintext); i++)
     for (int i = 0; i < len; i++)
     {
-        // printf("Char %c \n", plaintext[i]);
         rotate(plaintext[i], key);
-    }
-
-    
+    }    
 }
 
 int get_key(void)
@@ -52,8 +39,6 @@ int get_key(void)
 
 char rotate(char c, int n)
 {
-    // int changed_value;
-    // check for lowercase/uppercase/other characters in received string:
     if (c >= 'a' && c <= 'z') // 'a' is 97 in ASCII, 'z' is 122
     {
         // return printf("%c is lowercase \n", c);
