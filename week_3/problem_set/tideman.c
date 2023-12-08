@@ -1,6 +1,11 @@
+// Goal of this program is to run Tideman election - to
+// elect cnadidate with highest votes - by making pairs of candidates
+// and comapring their relative votes - the candidate that is preffered
+// than other wins, and the one preffered above else inpairs wins entire election
+
 #include "C:\\Users\\Luksi02\\Desktop\\CS50\\week_3\\problem_set\\cs50.h"
-// #include <cs50.h>
 #include <stdio.h>
+#include <string.h>
 
 // Max number of candidates
 #define MAX 9
@@ -32,6 +37,7 @@ void add_pairs(void);
 void sort_pairs(void);
 void lock_pairs(void);
 void print_winner(void);
+bool cycle(int winner, int loser);
 
 int main(int argc, string argv[])
 {
@@ -101,13 +107,13 @@ bool vote(int rank, string name, int ranks[])
 {
     for (int i = 0; i < candidate_count; i++)
     {
-        if (strcmp(name, candidate[i].name) == 0)
+        if (strcmp(name, candidates[i]) == 0)
         {
             ranks[rank] = i;
             return true;
         }
-        return false;
     }
+    return false;
 }
 
 // Update preferences given one voter's ranks
@@ -155,7 +161,7 @@ void sort_pairs(void)
     {
         int max = i; // initialize additional variable
 
-        for (int j = 0; j < candidate_count; j++)
+        for (int j = i + 1; j < candidate_count; j++)
         {
             if (preferences[pairs[j].winner][pairs[j].loser] > preferences[pairs[max].winner][pairs[max].loser])
             {
@@ -163,9 +169,12 @@ void sort_pairs(void)
             }
         }
 
-        pair tmp = pairs[i]; // additional variable for sorting
-        pairs[i] = pairs[max];
-        pairs[max] = tmp;
+        if (max != i)
+        {
+            pair tmp = pairs[i]; // additional variable for sorting
+            pairs[i] = pairs[max];
+            pairs[max] = tmp;
+        }
     }
     return;
 }
@@ -173,13 +182,57 @@ void sort_pairs(void)
 // Lock pairs into the candidate graph in order, without creating cycles
 void lock_pairs(void)
 {
-    // TODO
+    for (int i = 0; i < pair_count; i++)
+    {
+        if (!cycle(pairs[i].winner, pairs[i].loser))
+            locked[pairs[i].winner][pairs[i].loser] = true;
+    }
     return;
 }
 
 // Print the winner of the election
 void print_winner(void)
 {
-    // TODO
+    for (int i = 0; i < candidate_count; i++)
+    {
+        int is_winner = 1;
+
+        for (int j = 0; j < candidate_count; j++)
+        {
+            if (locked[j][i])
+            {
+                is_winner = 0;
+                break; // if there is 'edge' pointing the [i]-th cnadidate - that's not winner!
+            }
+        }
+
+        if (is_winner)
+        {
+            printf("The winner of the election is: %s", candidates[i]);
+            return;
+        }
+    }
     return;
+}
+
+// check if there's a cycle in a Tideman locks graph
+bool cycle(int winner, int loser)
+{
+    if (winner == loser) // cycle with the same candidate
+    {
+        return true;
+    }
+
+    for (int i = 0; i < candidate_count; i++)
+    {
+        if (locked[loser][i])
+        {
+            if (cycle(winner, i)) // recursively check for cycle in a [winner][i] pair
+            {
+                return true;
+            }
+        }
+    }
+
+    return false; // if no cycle - returning false
 }
