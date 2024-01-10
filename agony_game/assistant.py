@@ -7,6 +7,7 @@ import datetime
 tasks = []
 listening_to_task = False
 
+
 def listen_for_command():
     recognizer = sr.Recognizer()
 
@@ -28,9 +29,35 @@ def listen_for_command():
 
 def respond(response_text):
     print(response_text)
+
     engine = pyttsx3.init()
+    # Set the properties (optional)
+    engine.setProperty('rate', 150)  # Speed of speech
+    engine.setProperty('volume', 1.0)  # Volume level (0.0 to 1.0)
+
+    # Input text
+    text = "Hello, this is a text-to-speech conversion example."
+
+    # Set the voice (optional, if omitted, it will use the default voice)
+    # You can find available voices using engine.getProperty('voices')
+    voices = engine.getProperty('voices')
+    engine.setProperty('voice', voices[1].id)  # Selecting a different voice
+
     engine.say(response_text)
     engine.runAndWait()
+
+
+def read_recorded_speech():
+    try:
+        with open("recorded_speech.txt", "r") as file:
+            contents = file.read()
+            if contents:
+                respond("Here is the recorded speech:\n" + contents)
+            else:
+                respond("The recorded speech file is empty.")
+    except FileNotFoundError:
+        respond("The recorded speech file is not found.")
+
 
 def record_speech():
     recognizer = sr.Recognizer()
@@ -53,16 +80,17 @@ def record_speech():
     except sr.RequestError:
         print("Unable to access the Google Speech Recognition API.")
 
+
 def main():
     global tasks
     global listening_to_task
 
-    respond("Hello, Luke. I hope you're having a nice day today.")
+    respond("Hello, master. I hope you're having a nice day today.")
 
     while True:
         command = listen_for_command()
 
-        trigger_keyword = "engine"
+        trigger_keyword = "fridge"
 
         if command and trigger_keyword in command:
             if listening_to_task:
@@ -84,6 +112,8 @@ def main():
                 webbrowser.open("http://www.youtube.com/")
             elif "record" in command:
                 record_speech()
+            elif "read notes" in command:
+                read_recorded_speech()
             elif "motivation" in command:                
                 respond("It is not death that a man should fear, but he should fear never beginning to live.")
             elif "exit" in command:
@@ -91,6 +121,7 @@ def main():
                 break
             else:
                 respond("Sorry, I'm not sure how to handle that command.")
+
 
 if __name__ == "__main__":
     main()
