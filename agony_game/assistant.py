@@ -3,9 +3,28 @@ import pyttsx3
 import pyautogui
 import webbrowser
 import datetime
+from Bard import Chatbot
 
 tasks = []
 listening_to_task = False
+
+# BARD
+
+token =
+ts_token =
+
+chatbot = Chatbot(token, ts_token)
+
+
+def prompt_bard(prompt):
+    response = chatbot.ask("""Pretend you're AI of one of human spaceships sent 
+                           for colonisation of other planets, one crew member 
+                           is interested about: """ + prompt)
+    return response['content']
+
+# prompt_text = "what is google bard?"
+# response = prompt_bard(prompt_text)
+# print("\033[31m" + 'Bards response: ', response, '\n' + "\033[0m")
 
 
 def listen_for_command():
@@ -70,22 +89,25 @@ def record_speech():
     try:
         recorded_text = recognizer.recognize_google(audio)
         timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        
+
         with open("recorded_speech.txt", "a") as file:
             file.write(f"{timestamp}: {recorded_text}\n")
 
         print("Recording complete.")
+        return recorded_text
     except sr.UnknownValueError:
         print("Could not understand audio. Please try again.")
+        return None
     except sr.RequestError:
         print("Unable to access the Google Speech Recognition API.")
+        return None
 
 
 def main():
     global tasks
     global listening_to_task
 
-    respond("Hello, master. I hope you're having a nice day today.")
+    respond("Hello, this is Fridge, this vessel's AI.")
 
     while True:
         command = listen_for_command()
@@ -112,6 +134,10 @@ def main():
                 webbrowser.open("http://www.youtube.com/")
             elif "record" in command:
                 record_speech()
+            elif "question" in command:
+                recorded_text = record_speech()
+                bard_response = prompt_bard(recorded_text)
+                respond(bard_response)
             elif "read notes" in command:
                 read_recorded_speech()
             elif "motivation" in command:                
