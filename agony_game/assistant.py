@@ -4,14 +4,20 @@ import pyautogui
 import webbrowser
 import datetime
 from Bard import Chatbot
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 tasks = []
 listening_to_task = False
 
 # BARD
 
-token =
-ts_token =
+token = os.environ.get("token")
+ts_token = os.environ.get("ts_token")
+
+
 
 chatbot = Chatbot(token, ts_token)
 
@@ -67,6 +73,7 @@ def respond(response_text):
 
 
 def read_recorded_speech():
+    respond("Previously recorded entries: ")
     try:
         with open("recorded_speech.txt", "r") as file:
             contents = file.read()
@@ -79,6 +86,7 @@ def read_recorded_speech():
 
 
 def record_speech():
+    respond("Recording: ")
     recognizer = sr.Recognizer()
 
     with sr.Microphone() as source:
@@ -94,6 +102,7 @@ def record_speech():
             file.write(f"{timestamp}: {recorded_text}\n")
 
         print("Recording complete.")
+        respond("Recording complete")
         return recorded_text
     except sr.UnknownValueError:
         print("Could not understand audio. Please try again.")
@@ -107,12 +116,12 @@ def main():
     global tasks
     global listening_to_task
 
-    respond("Hello, this is Fridge, this vessel's AI.")
+    respond("Hello, this is Hal, this vessel's AI.")
 
     while True:
         command = listen_for_command()
 
-        trigger_keyword = "fridge"
+        trigger_keyword = "Hal"
 
         if command and trigger_keyword in command:
             if listening_to_task:
